@@ -369,7 +369,12 @@ labelsData.forEach(data => {
   const label = new Text();
   label.text = data.text;
   label.font = "/Fonts/ClashGrotesk/ClashGrotesk-Regular.ttf";
-  label.fontSize = 0.055;
+  // Font size differenziato
+  if (data.text === "FLATFADE" || data.text === "ABOUT US") {
+    label.fontSize = 0.055; // più piccolo
+  } else {
+    label.fontSize = 0.060; // standard
+  }
   label.color = data.text === "SPECCHIO" ? 0xaaaaaa : 0xffffff;
   label.anchorX = 'center';
   label.anchorY = 'middle';
@@ -379,7 +384,7 @@ labelsData.forEach(data => {
   label.sync();
 
   // Sfondo nero
-  const bgGeo = new THREE.PlaneGeometry(0.28, 0.12);
+  const bgGeo = new THREE.PlaneGeometry(0.30, 0.12);
   const bgMat = new THREE.MeshBasicMaterial({ color: 0x000000, opacity: 1, transparent: true });
   const bg = new THREE.Mesh(bgGeo, bgMat);
   bg.position.z = -0.01;
