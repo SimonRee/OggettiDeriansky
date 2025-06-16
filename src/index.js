@@ -356,7 +356,7 @@ const labelRadius = 3.3;
 
 // Definisci le etichette con angolo e link
 const labelsData = [//questi dati non modificano nulla, perché le modifiche vanno fatte nella parte responsive
-  { text: 'ABOUT', angle: Math.PI * 0.1, y: -0.97, link: 'https://wddc-groupieml.webflow.io/about' }, // basso
+  { text: 'ABOUT US', angle: Math.PI * 0.1, y: -0.97, link: 'https://wddc-groupieml.webflow.io/about' }, // basso
   { text: 'FLATFADE', angle: -Math.PI * 0.1, y: -0.97, link: 'https://wddc-groupieml.webflow.io/tunnel' }, // basso
   { text: 'PSICHE', angle: -Math.PI * 0.04, y: 1.06, link: 'https://wddc-groupieml.webflow.io/psiche' }, // alto
   { text: 'SPECCHIO', angle: Math.PI * 0.04, y: 1.06, link: 'https://wddc-groupieml.webflow.io/specchio' }, // alto
@@ -410,7 +410,7 @@ function updateNavLabelAngles() {
     const data = labelsData[index];
     
     // Calcolo nuovo angolo solo se la y è negativa (etichette in basso)
-    let baseAngle = data.text === 'ABOUT' ? Math.PI * 0.14 : 
+    let baseAngle = data.text === 'ABOUT US' ? Math.PI * 0.14 : 
                     data.text === 'FLATFADE' ? -Math.PI * 0.14 :
                     data.text === 'SPECCHIO' ? Math.PI * 0.04 :
                     data.text === 'PSICHE' ?-Math.PI * 0.04: 0;
