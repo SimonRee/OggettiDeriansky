@@ -369,7 +369,7 @@ labelsData.forEach(data => {
   const label = new Text();
   label.text = data.text;
   label.font = "/Fonts/ClashGrotesk/ClashGrotesk-Regular.ttf";
-  label.fontSize = 0.07;
+  label.fontSize = 0.05;
   label.color = data.text === "SPECCHIO" ? 0xaaaaaa : 0xffffff;
   label.anchorX = 'center';
   label.anchorY = 'middle';
