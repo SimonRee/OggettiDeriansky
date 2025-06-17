@@ -53,6 +53,28 @@ camera.lookAt(-1, 0, 0); // La camera guarda verso il centro del cilindro
 loadAndPlaceModels(scene, camera); //per mettere i modelli 3D da models.js
 
 
+// Cursore personalizzato CERCHIO CURSORE
+const customCursor = document.getElementById("customCursor");
+let cursorX = window.innerWidth / 2;
+let cursorY = window.innerHeight / 2;
+let targetX = cursorX;
+let targetY = cursorY;
+const trailingSpeed = 0.15;
+
+window.addEventListener("mousemove", (e) => {
+  targetX = e.clientX;
+  targetY = e.clientY;
+});
+
+// Anima il movimento del cursore
+function animateCursor() {
+  cursorX += (targetX - cursorX) * trailingSpeed;
+  cursorY += (targetY - cursorY) * trailingSpeed;
+  customCursor.style.transform = `translate(${cursorX}px, ${cursorY}px) translate(-50%, -50%)`;
+  requestAnimationFrame(animateCursor);
+}
+animateCursor();
+
 //LUCI
 const light = new THREE.AmbientLight(0xffffff, 0.3); // soft white light
 scene.add(light);
@@ -271,7 +293,10 @@ function updateCursorOnHover() {
       selected = selected.parent;
     }
 
-    document.body.style.cursor = "pointer";
+    //document.body.style.cursor = "pointer";
+    customCursor.style.width = "24px";// CURSORE CERCHIO
+    customCursor.style.height = "24px";// CURSORE CERCHIO
+
     isHoveringClickable = true;
 
     // Mostra il nome del modello
@@ -297,7 +322,10 @@ function updateCursorOnHover() {
 
   } else {
     if (isHoveringClickable) {
-      document.body.style.cursor = "default";
+      //document.body.style.cursor = "default";
+      customCursor.style.width = "16px"; // CURSORE CERCHIO
+      customCursor.style.height = "16px";// CURSORE CERCHIO
+
       isHoveringClickable = false;
     }
 
@@ -435,7 +463,10 @@ function updateNavInteractions() {
   if (intersects.length > 0) {
     const hovered = intersects[0].object.parent; // Prendiamo il gruppo
 
-    document.body.style.cursor = "pointer";
+    //document.body.style.cursor = "pointer";
+    customCursor.style.width = "24px";// CURSORE CERCHIO
+    customCursor.style.height = "24px";// CURSORE CERCHIO
+
 
     clickableNavs.forEach(group => {
       const scaleTarget = group === hovered ? 1.1 : 1;
@@ -451,7 +482,10 @@ function updateNavInteractions() {
     }
 
   } else {
-    document.body.style.cursor = "default";
+    //document.body.style.cursor = "default";
+    customCursor.style.width = "16px"; // CURSORE CERCHIO
+    customCursor.style.height = "16px";// CURSORE CERCHIO
+
     clickableNavs.forEach(group => {
       group.scale.lerp(new THREE.Vector3(1, 1, 1), 0.1);
     });
