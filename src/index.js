@@ -6,6 +6,8 @@ import { modelsGroup, getFocusedModel, getIsResetting, setLoadingManager, loadAn
 import { Text } from 'troika-three-text';
 import lottie from "lottie-web"; 
 
+const isMobile = window.innerWidth < 768; // Controlla se il dispositivo è mobile // per testare imposta a true
+
 //GESTIRE IL LOADER DELLA PAGINAAAA
 const loadingScreen = document.getElementById("loading-screen");
 
@@ -53,7 +55,7 @@ scene.fog = new THREE.Fog(0x000000, 0, 100); // se voglio attivare fog nel tunne
 
 
 const camera = new THREE.PerspectiveCamera(
-  40,
+  isMobile ? 50 : 40,
   window.innerWidth / window.innerHeight,
   0.1,
   1000
@@ -72,19 +74,21 @@ let targetX = cursorX;
 let targetY = cursorY;
 const trailingSpeed = 0.15;
 
-window.addEventListener("mousemove", (e) => {
-  targetX = e.clientX;
-  targetY = e.clientY;
-});
+if (!isMobile) {
+  window.addEventListener("mousemove", (e) => {
+    targetX = e.clientX;
+    targetY = e.clientY;
+  });
 
-// Anima il movimento del cursore
-function animateCursor() {
-  cursorX += (targetX - cursorX) * trailingSpeed;
-  cursorY += (targetY - cursorY) * trailingSpeed;
-  customCursor.style.transform = `translate(${cursorX}px, ${cursorY}px) translate(-50%, -50%)`;
-  requestAnimationFrame(animateCursor);
+  function animateCursor() {
+    cursorX += (targetX - cursorX) * trailingSpeed;
+    cursorY += (targetY - cursorY) * trailingSpeed;
+    customCursor.style.transform = `translate(${cursorX}px, ${cursorY}px) translate(-50%, -50%)`;
+    requestAnimationFrame(animateCursor);
+  }
+
+  animateCursor();
 }
-animateCursor();
 
 //LUCI
 const light = new THREE.AmbientLight(0xffffff, 0.3); // soft white light
@@ -277,6 +281,53 @@ window.addEventListener("click", (event) => {
   }
 });
 
+// Rende OGGETTI e NAVBAR cliccabili (MOBILE TOUCH)
+window.addEventListener("touchend", (event) => {
+  if (isDragging) {
+    mouse.clicked = false;
+    return; // blocca il touch se era un drag
+  }
+  const touch = event.changedTouches[0];
+  const rect = renderer.domElement.getBoundingClientRect();
+  mouse.x = ((touch.clientX - rect.left) / rect.width) * 2 - 1;
+  mouse.y = -((touch.clientY - rect.top) / rect.height) * 2 + 1;
+
+  raycaster.setFromCamera(mouse, camera);
+
+  // Tocco su modelli 3D (solo dopo la fine del tunnel)
+if (FinitoTunnel) {
+  const intersects = raycaster.intersectObjects(getClickableModels(), true);
+  if (intersects.length > 0) {
+    let selected = intersects[0].object;
+    while (selected.parent && !getClickableModels().includes(selected)) {
+      selected = selected.parent;
+    }
+
+    if (selected.userData.originalScale) {
+      selected.scale.setScalar(selected.userData.originalScale);
+    }
+
+    focusModelOnCamera(selected);
+    mouse.clicked = true;
+    return;
+  }
+}
+
+  // Tocco su label della navbar
+  const intersectsNav = raycaster.intersectObjects(clickableNavs, true);
+  if (intersectsNav.length > 0) {
+    let selected = intersectsNav[0].object;
+    while (selected.parent && !clickableNavs.includes(selected)) {
+      selected = selected.parent;
+    }
+
+    const link = selected.userData.link;
+    if (link) {
+      fadeToBlackAndRedirect(link);
+    }
+  }
+});
+
 
 
 //CAMBIA POINTER SU OGGETTO CLICCCABILE
@@ -436,7 +487,16 @@ labelsData.forEach(data => {
   group.userData.originalAngle = angle; // salva l'angolo originale
   group.position.x = Math.cos(angle) * labelRadius;
   group.position.z = Math.sin(angle) * labelRadius;
-  group.position.y = data.y;
+
+  let yPos = data.y;
+
+// Alza le scritte sopra e sotto su mobile
+if (isMobile) {
+  if (data.y < 0) yPos += 0.0; // scritte in basso: alzale
+  else yPos += 0.255; // scritte in alto: alzale anche loro
+}
+
+group.position.y = yPos;
 
   group.userData.link = data.link;
 
@@ -459,7 +519,7 @@ function updateNavLabelAngles() {
                     data.text === 'SPECCHIO' ? Math.PI * 0.04 :
                     data.text === 'PSICHE' ?-Math.PI * 0.04: 0;
 
-    const newAngle = isMobile && data.y < 0 ? baseAngle * 0.6 : baseAngle;
+    const newAngle = isMobile && data.y < 0 ? baseAngle * 0.3 : baseAngle;
 
     data.angle = newAngle;
     group.userData.originalAngle = newAngle;
