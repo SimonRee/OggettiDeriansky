@@ -295,7 +295,6 @@ window.addEventListener("touchend", (event) => {
   raycaster.setFromCamera(mouse, camera);
 
   // Tocco su modelli 3D (solo dopo la fine del tunnel)
-if (FinitoTunnel) {
   const intersects = raycaster.intersectObjects(getClickableModels(), true);
   if (intersects.length > 0) {
     let selected = intersects[0].object;
@@ -311,7 +310,6 @@ if (FinitoTunnel) {
     mouse.clicked = true;
     return;
   }
-}
 
   // Tocco su label della navbar
   const intersectsNav = raycaster.intersectObjects(clickableNavs, true);
