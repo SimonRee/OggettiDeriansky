@@ -66,6 +66,30 @@ camera.lookAt(-1, 0, 0); // La camera guarda verso il centro del cilindro
 loadAndPlaceModels(scene, camera); //per mettere i modelli 3D da models.js
 
 
+//robette per evitare problemi di click durante lo scroll su mobile
+let touchStartX = null;
+let touchMoved = false;
+
+window.addEventListener("touchstart", (e) => {
+  if (e.touches.length === 1) {
+    touchStartX = e.touches[0].clientX;
+    touchMoved = false;
+  }
+});
+
+window.addEventListener("touchmove", (e) => {
+  if (e.touches.length === 1 && touchStartX !== null) {
+    const deltaX = Math.abs(e.touches[0].clientX - touchStartX);
+    if (deltaX > 10) { // soglia per ignorare tocchi con movimento
+      touchMoved = true;
+    }
+  }
+});
+
+window.addEventListener("touchend", () => {
+  touchStartX = null;
+});
+
 // Cursore personalizzato CERCHIO CURSORE
 const customCursor = document.getElementById("customCursor");
 let cursorX = window.innerWidth / 2;
@@ -283,9 +307,9 @@ window.addEventListener("click", (event) => {
 
 // Rende OGGETTI e NAVBAR cliccabili (MOBILE TOUCH)
 window.addEventListener("touchend", (event) => {
-  if (isDragging) {
+  if (isDragging || touchMoved) {
     mouse.clicked = false;
-    return; // blocca il touch se era un drag
+    return; // blocca il touch se era un drag o uno scroll
   }
   const touch = event.changedTouches[0];
   const rect = renderer.domElement.getBoundingClientRect();
