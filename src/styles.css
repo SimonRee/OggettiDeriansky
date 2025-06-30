@@ -160,4 +160,8 @@ canvas {
   body {
     cursor: default !important;
   }
+  #loading-animation {
+  width: 30vw;
+  height: 30vw;
+}
 }
