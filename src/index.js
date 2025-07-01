@@ -6,6 +6,15 @@ import { modelsGroup, getFocusedModel, getIsResetting, setLoadingManager, loadAn
 import { Text } from 'troika-three-text';
 import lottie from "lottie-web"; 
 
+//animazione di caricamento
+lottie.loadAnimation({
+  container: document.getElementById("loading-animation"),
+  renderer: "svg",
+  loop: true,
+  autoplay: true,
+  path: "/testa.json", // assicurati che il path sia corretto
+});
+
 const isMobile = window.innerWidth < 768; // Controlla se il dispositivo è mobile // per testare imposta a true
 
 //GESTIRE IL LOADER DELLA PAGINAAAA
@@ -36,14 +45,7 @@ manager.onError = (url) => {
 
 setLoadingManager(manager);
 
-//animazione di caricamento
-lottie.loadAnimation({
-  container: document.getElementById("loading-animation"),
-  renderer: "svg",
-  loop: true,
-  autoplay: true,
-  path: "/testa.json", // assicurati che il path sia corretto
-});
+
 
 
 //INIZIALIZZA IL RAYCASTER PER POTER CLICCARE SUGLI OGGETTI
