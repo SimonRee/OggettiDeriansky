@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { LoadingManager } from "three";
+import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
 
 const isMobile = window.innerWidth < 768; // Controlla se il dispositivo è mobile // per testare imposta a true
 
@@ -11,7 +12,11 @@ export let sharedManager;
 
 export function setLoadingManager(manager) {
   sharedManager = manager;
+  const DRLoader = new DRACOLoader();
+  DRLoader.setDecoderPath('/draco/'); 
+
   loader = new GLTFLoader(sharedManager); // ← lo inizializzi solo dopo
+  loader.setDRACOLoader(DRLoader);
 }
 const clickableModels = [];
 export const modelsGroup = new THREE.Group(); // Gruppo globale
